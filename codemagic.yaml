@@ -1,26 +1,26 @@
 workflows:
   android-workflow:
     name: Build Android APK
-    max_build_duration: 60
     instance_type: mac_mini_m1
+    max_build_duration: 60
+    # если проект в корне — оставь ".", иначе укажи путь к модулю/папке проекта
+    working_directory: .
 
     environment:
-      vars:
-        GRADLE_TASK: ":app:assembleRelease"
       java: 17
-      android:
-        build_dir: android
+      vars:
+        GRADLE_TASK: "assembleRelease"
 
     scripts:
-      - name: Clean project
+      - name: Clean
         script: ./gradlew clean
-      - name: Build release APK
-        script: ./gradlew assembleRelease
+      - name: Build
+        script: ./gradlew $GRADLE_TASK
 
     artifacts:
       - app/build/outputs/**/*.apk
 
-    publishing:
-      email:
-        recipients:
-          - your@email.com
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - ~/.gradle/wrapper
